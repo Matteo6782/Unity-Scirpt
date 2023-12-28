@@ -1,3 +1,11 @@
+/*
+ * RocketController Script:
+ * Use this script to create a rocket controller for a Unity game. The script enables a rocket GameObject to follow and rotate towards a target (assumed to be the "Player" GameObject) 
+ * with specified movement and rotation speeds. The rocket has a fuel system, and when the fuel runs out or upon collision with specified objects ("Ground" or "Player"),
+ * it triggers an explosion effect and destroys the rocket.
+ *
+*/
+
 using UnityEngine;
 
 public class RocketController : MonoBehaviour
