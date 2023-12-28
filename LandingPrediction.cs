@@ -52,6 +52,7 @@ public class LandingPrediction : MonoBehaviour
             Vector3 predictedPosition = transform.position;
             Vector3 predictedVelocity = rb.velocity;
 
+            // Simulate future positions based on current velocity and gravity
             for (int i = 0; i < predictionSteps; i++)
             {
                 predictedPosition += predictedVelocity * timeIncrement;
@@ -61,12 +62,15 @@ public class LandingPrediction : MonoBehaviour
             Debug.DrawLine(transform.position, predictedPosition, Color.red);
 
             RaycastHit hit;
+            // Cast a ray towards the predicted position to check for obstacles
             if (Physics.Raycast(transform.position, predictedPosition - transform.position, out hit, Mathf.Infinity, groundLayer))
             {
+                // Update landing indicators if a landing point is found
                 UpdateLandingIndicators(hit.point, canLandMaterial);
             }
             else
             {
+                // If no direct path is found, find the closest ground and update indicators
                 RaycastHit closestHit = FindClosestGround();
                 if (closestHit.collider != null)
                 {
@@ -74,33 +78,39 @@ public class LandingPrediction : MonoBehaviour
                 }
                 else
                 {
+                    // If no suitable landing point is found, hide the indicators
                     HideLandingIndicators();
                 }
             }
         }
         else
         {
+            // If not using the jetpack, hide the indicators
             HideLandingIndicators();
         }
     }
 
     private void UpdateLandingIndicators(Vector3 position, Material material)
     {
+        // Update the position and material of landingPoint
         landingPoint.transform.position = Vector3.Lerp(landingPoint.transform.position, position, Time.deltaTime * smoothAmount);
         landingPointRenderer.material = material;
 
+        // Update the rotation and material of the arrow
         arrow.transform.rotation = Quaternion.LookRotation(position - transform.position);
         arrowRenderer.material = material;
     }
 
     private void HideLandingIndicators()
     {
+        // Hide both landingPoint and arrow indicators
         landingPoint.SetActive(false);
         arrow.SetActive(false);
     }
 
     private RaycastHit FindClosestGround()
     {
+        // Find colliders within a sphere and determine the closest ground point
         Collider[] colliders = Physics.OverlapSphere(transform.position, 50f, groundLayer);
         float closestDistance = Mathf.Infinity;
         RaycastHit closestHit = new RaycastHit();
